@@ -1,6 +1,8 @@
 import json
 from tornado import web
 from jupyterhub.apihandlers import  APIHandler, default_handlers
+from batchspawner import BatchSpawnerBase
+
 
 class BatchSpawnerAPIHandler(APIHandler):
     @web.authenticated
@@ -17,11 +19,18 @@ class BatchSpawnerAPIHandler(APIHandler):
         for s in user.spawners.values():
             if s.api_token == token:
                 spawner = s
+                # fix for when spawner is not batchspawner.
+                # unsure if you can link properties between two classes
+                while not issubclass(spawner.__class__,BatchSpawnerBase):
+                  if hasattr(s,'child_spawner'):
+                    spawner = spawner.child_spawner
                 break
         data = self.get_json_body()
+        self.log.debug(data)
         for key, value in data.items():
             if hasattr(spawner, key):
                 setattr(spawner, key, value)
+        #pdb.set_trace()
         self.finish(json.dumps({"message": "BatchSpawner data configured"}))
         self.set_status(201)
 

@@ -654,7 +654,8 @@ set -eu
 
     state_pending_re = Unicode(r"job_state = [QH]").tag(config=True)
     state_running_re = Unicode(r"job_state = R").tag(config=True)
-    state_exechost_re = Unicode(r"exec_host = ([\w_-]+)/").tag(config=True)
+    #state_exechost_re = Unicode(r"exec_host = ([\w_-]+)/").tag(config=True)
+    state_exechost_re = Unicode(r"exec_host = ([\w_-]+)").tag(config=True)
 
 
 class UserEnvMixin:
